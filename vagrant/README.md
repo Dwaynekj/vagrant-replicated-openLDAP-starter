@@ -11,9 +11,11 @@
 - Upload Dev License
   - Login `https://vendor.replicated.com/apps/<your app>/customers`
   - Get License
-- Follow the on-screen steps to setup
-  - select LDAP authentication
-  - Settings should look like [OpenLDAP settings](replicated/OpenLDAP-README.md)
+- **use LDAP authentication** not simple auth for the first login
+  - Settings should look like [OpenLDAP settings](replicated/OpenLDAP-README.md#ldap)
+  - Once you save the page, it will test and confirm the LDAP setup
+- Once the LDAP settings are finished, complete the remaining LRS Settings
+  - Settings should look like [OpenLDAP settings](replicated/OpenLDAP-README.md#lrs)
 
 ## Step 3: (Vagrant Shell) Replicated LDAP Identity API Test
 
@@ -40,8 +42,10 @@
 
 - Use the uid and the password
 - In this case we created a user with uid james and password "goldfinger"
+- Your welcome to create more users, groups, change passwords, etc
 
-## Examples
+
+## LDAP Examples
 
 - Change LDAP user password `sudo docker exec my-openldap-container ldappasswd -x -H ldap://localhost -D "cn=admin,dc=example,dc=org" -w "admin" -s "password" "uid=james,ou=appAdmin,dc=example,dc=org"`
 - LDAP Search for User`sudo docker exec my-openldap-container ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin -s sub "(uid=james)"`
