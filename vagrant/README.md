@@ -15,7 +15,8 @@
   - Settings should look like [OpenLDAP settings](replicated/OpenLDAP-README.md#ldap)
   - Once you save the page, it will test and confirm the LDAP setup
 - Once the LDAP settings are finished, complete the remaining LRS Settings
-  - Settings should look like [OpenLDAP settings](replicated/OpenLDAP-README.md#lrs)
+  - Settings should look like [OpenLDAP settings](replicated/OpenLDAP-README.md#your-app-settings)
+  - Confirm that that replicated successfully started and launched your app before continuing
 
 ## Step 3: (Vagrant Shell) Replicated LDAP Identity API Test
 
