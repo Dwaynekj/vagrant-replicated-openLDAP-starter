@@ -79,8 +79,12 @@
         group: vagrant
         mode: 0644
 
+    - name: Cleanup OpenLDAP
+      command: docker rm my-openldap-container
+      ignore_errors: true
+
     - name: Start OpenLDAP
-      command: sudo docker run -p 389:389 -p 636:636 --rm --network=premkit_replicated --name my-openldap-container --volume /home/vagrant/ldif:/ldif --detach osixia/openldap:1.2.4
+      command: sudo docker run -p 389:389 -p 636:636 --restart always --network=premkit_replicated --name my-openldap-container --volume /home/vagrant/ldif:/ldif --detach osixia/openldap:1.2.4
 
     - name: Test OpenLDAP
       command: sudo docker exec my-openldap-container ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
