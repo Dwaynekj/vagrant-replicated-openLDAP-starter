@@ -35,6 +35,10 @@
   - `docker build ~/replicated/<your app repo>/path/to/dockerfile`
   - Reuse the same docker tags as the container currently in use. Once you restart the application from the on-prem Admin Console (http://localhost:8800) or CLI, your updated images will be used by Replicated.
   - More info from the [Replicated Docs](https://help.replicated.com/guides/iterate-with-replicated-studio/iterate/)
+  
+## Logging Back into the Replicated Console
+- Use the uid and the password
+- In this case we created a user with uid james and password "goldfinger"
 
 ## Examples
 
