@@ -1,0 +1,92 @@
+- name: Configure Local Replicated LDAP Dev Vagrant Env
+  vars_files:
+    - ./vars/defaults.yml
+  hosts: all
+  become: true
+  pre_tasks:
+  roles:
+    - common
+    - docker
+
+  post_tasks:
+    - name: OpenLDAP Deps
+      yum:
+        pkg: "{{item}}"
+        state: "present"
+      with_items:
+        - openldap
+        - compat-openldap
+        - openldap-clients
+        - openldap-servers
+        - openldap-servers-sql
+        - openldap-devel
+
+    - name: Util Deps
+      yum:
+        pkg: "{{item}}"
+        state: present
+      with_items:
+        - python-pip
+
+    - name: install pexpect
+      pip:
+        name: pexpect
+
+    - name: Cleanup Replicated studio
+      command: docker rm studio
+      ignore_errors: true
+
+    - name: Run Replicated Studio
+      command: docker run --name studio -d --restart always -v $HOME/replicated:/replicated -p 8006:8006 replicated/studio:latest
+
+    - name: Get Replicated Installer
+      get_url:
+        url: "https://get.replicated.com/studio/swarm"
+        dest: "/home/vagrant/replicated-install.sh"
+
+    - name: Launch Replicated
+      expect:
+        command: bash /home/vagrant/replicated-install.sh
+        responses:
+          (?i)studio: "http://172.17.0.1:8006"
+          (?i)address: "127.0.0.1"
+          (?i)proxy: "n"
+
+    - name: Install OpenLDAP
+      command: docker pull osixia/openldap:1.2.4
+
+    - name: Creates directory
+      file:
+        path: /home/vagrant/ldif
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: 0755
+
+    - name: Add Some Sample LDAP Configuration files
+      copy:
+        src: "templates/replicated/appAdmin.ldif"
+        dest: /home/vagrant/ldif/appAdmin.ldif
+        owner: vagrant
+        group: vagrant
+        mode: 0644
+
+    - name: Add Some Sample LDAP Configuration files
+      copy:
+        src: "templates/replicated/appAdmin1.ldif"
+        dest: /home/vagrant/ldif/appAdmin1.ldif
+        owner: vagrant
+        group: vagrant
+        mode: 0644
+
+    - name: Start OpenLDAP
+      command: sudo docker run -p 389:389 -p 636:636 --rm --network=premkit_replicated --name my-openldap-container --volume /home/vagrant/ldif:/ldif --detach osixia/openldap:1.2.4
+
+    - name: Test OpenLDAP
+      command: sudo docker exec my-openldap-container ldapsearch -x -H ldap://localhost -b dc=example,dc=org -D "cn=admin,dc=example,dc=org" -w admin
+
+    - name: Add Groups
+      command: sudo docker exec my-openldap-container ldapadd -x -H ldap://localhost -D "cn=admin,dc=example,dc=org" -w "admin" -f /ldif/appAdmin.ldif
+
+    - name: Add Users
+      command: sudo docker exec my-openldap-container ldapadd -x -H ldap://localhost -D "cn=admin,dc=example,dc=org" -w "admin" -f /ldif/appAdmin1.ldif

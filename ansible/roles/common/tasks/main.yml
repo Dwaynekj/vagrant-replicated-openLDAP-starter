@@ -1,0 +1,62 @@
+# - debug:
+#     msg:
+#     - short_name :"{{ inventory_hostname_short }}"
+#     - name :"{{ inventory_hostname }}"
+#     - batch: "{{ ansible_play_batch }}"
+#     - groupname:  "{{ group_names }}"
+#     - groups:  "{{ groups }}"
+
+- name: install epel repos
+  yum:
+      name: epel-release
+      state: present
+
+- name: upgrade all packages
+  yum: name=* state=latest
+
+- name: Install NTP
+  yum:
+      name: ntp
+      state: present
+
+- name: Configure NTP
+  command: chkconfig ntpd on
+
+- name: Resync NTP
+  command: ntpdate pool.ntp.org
+  ignore_errors: true
+
+- name: Install cURL
+  yum:
+      name: curl
+      state: present
+
+- name: Install lsof
+  yum:
+      name: lsof
+      state: present
+
+- name: Install nc
+  yum:
+      name: nc
+      state: present
+
+- name: Install wget
+  yum:
+      name: wget
+      state: present
+
+- name: Install vim
+  yum:
+      name: vim
+      state: present
+
+- name: Install telnet
+  yum:
+      name: telnet
+      state: present
+
+- name: Restart sshd
+  service:
+      name: "sshd"
+      state: "restarted"

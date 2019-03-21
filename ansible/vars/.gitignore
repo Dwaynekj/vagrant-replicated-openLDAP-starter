@@ -1,0 +1,4 @@
+# Inlclude this directly, but empty
+# Ignore secrets.yml
+*
+!.gitignore

@@ -1,0 +1,4 @@
+dn: ou=appAdmin,dc=example,dc=org
+objectClass: top
+objectClass: organizationalunit
+ou: appAdmin

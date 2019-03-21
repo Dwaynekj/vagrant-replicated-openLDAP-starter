@@ -1,0 +1,19 @@
+dn: uid=james,ou=appAdmin,dc=example,dc=org
+sn: James
+givenName: Bond
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+gidNumber: 6592
+uidNumber: 19920
+mail: jbond@mail.com
+uid: james
+cn: appAdmin One
+homeDirectory: /home/james
+gecos: james
+loginShell: /bin/bash
+shadowLastChange: 15807
+userPassword: goldfinger

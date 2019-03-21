@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "centos/7"
+  config.vm.hostname = ENV["USER"] + ".vagrant"
+
+  config.vm.define "replicated" do |replicated|
+    replicated.vm.hostname = ENV["USER"] + ".replicated" + ".vagrant"
+    replicated.vm.box = "centos/7"
+    config.disksize.size = '80GB'
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "8192"
+      vb.cpus = "2"
+    end
+    config.vm.synced_folder "./replicated/syncdir/", "/home/vagrant/replicated"
+    config.vm.network "forwarded_port", guest: 8800, host: 8800
+    config.vm.network "forwarded_port", guest: 8080, host: 8080
+    config.vm.network "forwarded_port", guest: 8001, host: 8001
+    config.vm.network "forwarded_port", guest: 8002, host: 8002
+
+    config.vm.provision "ansible" do |ansible|
+      ansible.verbose = "vv"
+      ansible.extra_vars = {
+        hostTarget: "replicated",
+        sudoer: "vagrant",
+        tfEnv: ENV["USER"] + "vagrant",
+        ansible_ssh_common_args: "",
+        is_vagrant: true
+      }
+      ansible.playbook = "../ansible/replicated.yml"
+    end
+  end
+
+end
