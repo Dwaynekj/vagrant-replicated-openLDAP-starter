@@ -37,6 +37,7 @@
   - More info from the [Replicated Docs](https://help.replicated.com/guides/iterate-with-replicated-studio/iterate/)
   
 ## Logging Back into the Replicated Console
+
 - Use the uid and the password
 - In this case we created a user with uid james and password "goldfinger"
 
